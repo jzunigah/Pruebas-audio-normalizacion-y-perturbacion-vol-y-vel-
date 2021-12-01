@@ -1,0 +1,301 @@
+inFileName = 'C:\\Users\\AECSA\\Desktop\\prueba1\\audiojuan.wav'
+
+from pydub import AudioSegment
+from pydub.effects import normalize
+
+x = AudioSegment.from_wav(inFileName)
+
+# cut it to length
+# cut = sound[startTime * 1000:endTime * 1000]
+# # export sound cut as wav file
+# cut.export(x, format="wav")
+
+# y.export('y.wav', format="wav", bitrate="64k")
+
+import sounddevice
+
+# sf.read.available_formats('x.wav')
+
+import matplotlib.pyplot as plt
+import soundfile as sf
+import sounddevice as sd
+# https://catalog.ldc.upenn.edu/desc/addenda/LDC93S1.wav
+data, fs = sf.available_formats('x.wav')
+
+
+from scipy.io.wavfile import read 
+samplerate, data = read('x.wav')
+
+samplerate 
+
+x
+
+from pydub import AudioSegment
+
+song = AudioSegment.from_wav(inFileName)
+
+# reduce volume by 10 dB
+song_10_db_quieter = song - 50
+
+# but let's make him *very* quiet
+song = song - 20
+
+# save the output
+song.export("amplitud2.wav", "wav")
+
+
+
+
+
+
+
+y = normalize(x)
+
+y
+
+from pydub import AudioSegment  
+from pydub.playback import play  
+  
+wav_file = AudioSegment.from_file(inFileName,  
+                                  format = "wav")  
+  
+play(wav_file)
+
+normalize(wav_file)
+
+
+
+import librosa
+
+import soundfile
+
+# import matplotlib.pyplot as plt
+# import numpy as np
+# plt.plot(time,x)
+# plt.xlabel('Time [s]')
+# plt.ylabel('Amplitude')
+# plt.title('CantinaBand3.wav')
+# plt.show()
+
+import matplotlib.pyplot as plt
+from scipy.io import wavfile # get the api
+
+fs, data = wavfile.read('audiojuan.wav')    # load the data
+
+plt.plot(data)  # plot the entire amplitude curve of the audio file
+
+plt.show()
+
+import matplotlib.pyplot as plt
+from scipy.io import wavfile # get the api
+
+fs, data = wavfile.read('amplitud2.wav')    # load the data
+
+plt.plot(data)  # plot the entire amplitude curve of the audio file
+
+plt.show()
+
+import matplotlib.pyplot as plt
+from scipy.io import wavfile # get the api
+
+fs, data = wavfile.read('amplitud1.wav')    # load the data
+
+plt.plot(data)  # plot the entire amplitude curve of the audio file
+
+plt.show()
+
+from pydub import AudioSegment
+sound = AudioSegment.from_file("audiojuan.wav")
+
+def speed_change(sound, speed=1.0):
+    # Manually override the frame_rate. This tells the computer how many
+    # samples to play per second
+    sound_with_altered_frame_rate = sound._spawn(sound.raw_data, overrides={
+         "frame_rate": int(sound.frame_rate * speed)
+      })
+     # convert the sound with altered frame rate to a standard frame rate
+     # so that regular playback programs will work right. They often only
+     # know how to play audio at standard frame rate (like 44.1k)
+    return sound_with_altered_frame_rate.set_frame_rate(sound.frame_rate)
+
+
+slow_sound = speed_change(sound, 0.75)
+fast_sound = speed_change(sound, 2.0)
+
+sound
+
+fast_sound
+
+slow_sound.export("slow.wav", "wav")
+
+fast_sound.export("fast.wav", "wav")
+
+from pydub import AudioSegment
+from pydub.playback import play
+
+song = AudioSegment.from_wav("slow.wav")
+
+# boost volume by 6dB
+louder_song = song + 20
+
+# reduce volume by 3dB
+quieter_song = song - 3
+
+#Play song
+play(louder_song)
+
+#save louder song 
+louder_song.export("slowvolalto.wav", format='wav')
+
+louder_song
+
+from pydub import AudioSegment
+
+def match_target_amplitude(sound, target_dBFS):
+    change_in_dBFS = target_dBFS - sound.dBFS
+    return sound.apply_gain(change_in_dBFS)
+
+sound = AudioSegment.from_file("slow.wav", "wav")
+normalized_sound = match_target_amplitude(sound, -1.0)
+normalized_sound.export("slownormal.wav", format="wav")
+
+normalized_sound
+
+import matplotlib.pyplot as plt
+from scipy.io import wavfile # get the api
+
+fs, data = wavfile.read('slownormal.wav')    # load the data
+
+plt.plot(data)  # plot the entire amplitude curve of the audio file
+
+plt.show()
+
+from pydub import AudioSegment
+
+def match_target_amplitude(sound, target_dBFS):
+    change_in_dBFS = target_dBFS - sound.dBFS
+    return sound.apply_gain(change_in_dBFS)
+
+sound = AudioSegment.from_file("audiojuan.wav", "wav")
+normalized_sound = match_target_amplitude(sound, -1.0)
+normalized_sound.export("juannormal.wav", format="wav")
+
+normalized_sound
+
+import wave
+import sys
+
+import binascii
+
+ip = wave.open('C:\\Users\\AECSA\\Desktop\\prueba1\\audiojuan.wav', 'r')
+
+op = wave.open('C:\\Users\\AECSA\\Desktop\\prueba1\\audiojuanout.wav', 'w')
+op.setparams(ip.getparams())
+
+for i in range(ip.getnframes()):
+    iframes = ip.readframes(1)
+    amp = int(binascii.hexlify(iframes),16)
+if amp > 32767:
+    amp = 65535 - int(binascii.hexlify(iframes),16)#-ve
+    print(amp)
+else:
+    amp = int(binascii.hexlify(iframes),16)#+ve
+    print(amp)
+if amp < 2000:
+    #make it zero
+    final_frame = "\x00\x00"
+    final_frame = final_frame.astype(object)
+else:
+    #Keep the frame 
+    final_frame = iframe
+op.writeframes(final_frame)
+op.close()
+ip.close()
+
+final_frame
+
+import wave
+import audioop
+
+inFileName = 'C:\\Users\\AECSA\\Downloads\\juannormal.wav'
+outFileName = 'C:\\Users\\AECSA\\Downloads\\juannormal_mono.wav'
+
+# read input file and write mono output file
+try:
+    # open the input and output files
+    inFile = wave.open(inFileName,'rb')
+    outFile = wave.open(outFileName,'wb')
+    # force mono
+    outFile.setnchannels(1)
+    # set output file like the input file
+    outFile.setsampwidth(inFile.getsampwidth())
+    outFile.setframerate(inFile.getframerate())
+    # read
+    soundBytes = inFile.readframes(inFile.getnframes())
+    print("frames read: {} length: {}".format(inFile.getnframes(),len(soundBytes)))
+    # convert to mono and write file
+    monoSoundBytes = audioop.tomono(soundBytes, inFile.getsampwidth(), 1, 1)
+    outFile.writeframes(monoSoundBytes)
+    
+except Exception as e:
+    print(e)
+    
+finally:
+    inFile.close()
+    outFile.close()
+
+from vosk import Model, KaldiRecognizer
+import wave
+import json
+
+'''
+this script reads a mono wav file (inFileName) and writes out a json file (outfileResults) with the speech to text conversion results.  It then writes out another json file (outfileText) that only has the "text" values.
+'''
+
+inFileName = 'C:\\Users\\AECSA\\Downloads\\juannormal_mono.wav'
+outfileResults = 'C:\\Users\\AECSA\\Downloads\\juannormal_results.jscn'
+outfileText = 'C:\\Users\\AECSA\\Downloads\\juannormal_text.json'
+
+wf = wave.open(inFileName, "rb")
+
+# initialize a str to hold results
+results = ""
+textResults = []
+
+# build the model and recognizer objects.
+model = Model(r"C:\Users\AECSA\Desktop\prueba1\modelo")
+recognizer = KaldiRecognizer(model, wf.getframerate())
+recognizer.SetWords(True)
+
+while True:
+    data = wf.readframes(4000)
+    if len(data) == 0:
+        break
+    if recognizer.AcceptWaveform(data):
+        recognizerResult = recognizer.Result()
+        results = results + recognizerResult
+        # convert the recognizerResult string into a dictionary  
+        resultDict = json.loads(recognizerResult)
+        # save the 'text' value from the dictionary into a list
+        textResults.append(resultDict.get("text", ""))
+
+##    else:
+##        print(recognizer.PartialResult())
+        
+# process "final" result
+results = results + recognizer.FinalResult()
+resultDict = json.loads(recognizer.FinalResult())
+textResults.append(resultDict.get("text", ""))
+
+# write results to a file
+with open(outfileResults, 'w') as output:
+    print(results, file=output)
+
+# write text portion of results to a file
+with open(outfileText, 'w') as output:
+    print(json.dumps(textResults, indent=4), file=output)
+
+ffmpeg -i x.wav -acodec pcm_s16le -ac 1 -ar 16000 out.wav
+
+sox --help
+
